@@ -1,0 +1,86 @@
+Problem statement:
+-----------------
+
+The task is to create customized Ident server specified in RFC 1413.
+
+Instead of standard RFC 1413 reply, the username that the program should
+reply with depends on the command line parameters passed when the server started. 
+The operating system returned should always be "UNIX". The reply type must be chosen
+by specifying one of the following command-line parameters:
+
+* random
+  Replies with the username of a randomly-chosen Unix user on the
+  host running your program.
+
+* uid
+  Replies with the username of the user whose UID is equal to the
+  "client port" parameter specified by the ident client. If there is no
+  user matching the requested UID, the program should reply with an RFC
+  1413 compliant "NO-USER" error.
+
+* always <name>
+  Always replies with the specified name.
+
+The program should format the reply exactly as specified in RFC 1413,
+however the username returned should be as specified above. Do not
+need to determine the owner of the port specified by the client.
+If the program is run with no parameters, it should default to
+"random". If an unknown parameter is specified, the -always
+parameter lacks a "name", or more than one of the above parameters are
+specified, the program should exit with an error.
+
+The program should have:
+* Accepts and services multiple concurrent connections.
+
+* Performs basic validation of the client's request. No need to
+  follow the RFC exactly, but implement the validation procedures you
+  feel are necessary. If the client sends you an invalid request, you
+  must disconnect the client (and only that client) immediately without
+  sending a reply.
+
+
+Requirements:
+------------
+To run this program you need linux with perl installed on it.
+Following external perl libraries should be installed:
+Getopt::Long
+Log::Log4perl
+IPC::Shareable
+
+This program is using port 113 as listening port.
+
+
+How to start:
+------------
+To start the daemon:
+$ sudo ./identd.pl
+
+By default ident server will start in 'random' mode as specified in problem statement.
+You can start it in 'always' mode as below:
+$ sudo ./identd.pl --always john
+
+To stop the daemon:
+$ sudo ./identd.pl --kill
+
+To see the help menu:
+$ sude ./identd.pl --help
+
+You can see the logs in /var/log/identd.log. The logfile is useful to understand what is happening with the daemon.
+
+
+Verify server responses:
+-----------------------
+You can do verifications by connecting to server like:
+$ telnet localhost 113
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+652, 232
+652, 232 : USERID : UNIX : nscd
+Connection closed by foreign host.
+
+
+Author:
+------
+Anand Modh
+anandmodh@gmail.com
